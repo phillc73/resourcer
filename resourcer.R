@@ -1,3 +1,5 @@
+library("knitr")
+
 ################################################
 # Add new resource function
 ################################################
@@ -95,7 +97,7 @@ assign_resource <- function(name, assigned_capacity, project){
 # Unassign Resources function
 #############################################
 
-unassign_resources <- function(name, project){
+unassign_resource <- function(name, project){
   
   # Load in the project file
   project_df <- read.csv("projects.csv", stringsAsFactors = FALSE)
@@ -108,12 +110,29 @@ unassign_resources <- function(name, project){
 
 }
 
+#############################################
+# Remove Resource function
+#############################################
+# Needs checks to see if name still assigned to projects
+
+remove_resource <- function(name){
+  
+  # Load in the project file
+  resource_df <- read.csv("resources.csv", stringsAsFactors = FALSE)
+  
+  # Remove rows which match name and project input
+  resource_df <- resource_df[!(resource_df$name == name), ]
+  
+  # write new CSV
+  write.csv(resource_df, "resources.csv", row.names = FALSE)
+  
+}
 
 #############################################
 # Show Available Resources function
 #############################################
 
-show_resources <- function(){
+show_resources <- function(order_by = "name"){
   
   # If resources.csv files exists load it and show contents
   if(file.exists("resources.csv")){
@@ -158,8 +177,11 @@ show_resources <- function(){
     
   }
   
+  # Apply ordering
+  resource_df <- resource_df[with(resource_df, order(eval(parse(text = order_by)))),]
+  
   # Return the dataframe to print on screen
-  resource_df
+  knitr::kable(resource_df)
   
   } else {
     
@@ -173,14 +195,17 @@ show_resources <- function(){
 # Show Projects function
 #############################################
 
-show_projects <- function(){
+show_projects <- function(order_by = "project"){
   
   # If projects.csv files exists load it and show contents
   if(file.exists("projects.csv")){
     project_df <- read.csv("projects.csv", stringsAsFactors = FALSE)
     
+    # Apply ordering
+    project_df <- project_df[with(project_df, order(eval(parse(text = order_by)))),]
+    
     # Return the dataframe to print on screen
-    project_df
+    knitr::kable(project_df)
     
   } else {
     # If projects.csv doesn't exist, show error
@@ -207,8 +232,15 @@ assign_resource("BA", 30, "Lifting Stuff")
 assign_resource("BA", 20, "Blowing Up Stuff")
 assign_resource("BA", 20, "Lifting Stuff")
 
-unassign_resources("BA", "Lifting Stuff")
+unassign_resource("BA", "Lifting Stuff")
+
+remove_resource("Peck")
 
 show_resources()
+show_resources("available_capacity")
+
 show_projects()
+show_projects(order_by = "name")
+show_projects("assigned_capacity")
+
 
