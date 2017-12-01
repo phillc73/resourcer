@@ -38,7 +38,7 @@ assign_resource("Smith", 10, "Smoking")
 assign_resource("BA", 20, "Lifting Stuff")
 ```
 
-* Remove a resource from a project. The function is applied in the form of `unassign_resource(name)`
+* Remove a resource from a project. The function is applied in the form of `unassign_resource(name, project)`
 
 ```r
 unassign_resource("BA", "Lifting Stuff")
