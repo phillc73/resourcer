@@ -44,18 +44,20 @@ assign_resource("BA", 20, "Lifting Stuff")
 unassign_resource("BA", "Lifting Stuff")
 ```
 
-* Remove a resource from the resource list. The function is applied in the form of `remove_resource(name)`
-
-```r
-remove_resource("Peck")
-```
-
 * View all resources assigned to various projects, including their assigned capacity to each project. Returned table may be optionally ordered by any column. The function is applied in the form of `show_projects(order_by)`
 
 ```r
 show_projects()
 show_projects(order_by = "name")
 show_projects("assigned_capacity")
+
+|   |name    | assigned_capacity|project      |
+|:--|:-------|-----------------:|:------------|
+|4  |Smith   |                10|Smoking      |
+|3  |Smith   |                20|Disguising   |
+|5  |BA      |                20|Fixing Stuff |
+|1  |Murdock |                25|Flying       |
+|2  |Peck    |                30|Persuading   |
 ```
 
 
@@ -64,7 +66,22 @@ show_projects("assigned_capacity")
 ```r
 show_resources()
 show_resources("available_capacity")
+
+|   |name    | capacity|team   | available_capacity|
+|:--|:-------|--------:|:------|------------------:|
+|3  |Peck    |       40|A-Team |                 10|
+|4  |Smith   |       40|A-Team |                 10|
+|2  |Murdock |       40|A-Team |                 15|
+|1  |BA      |       40|A-Team |                 20|
+
 ```
+
+* Remove a resource from the resource list. The function is applied in the form of `remove_resource(name)`
+
+```r
+remove_resource("Peck")
+```
+
 
 ## To Do
 
