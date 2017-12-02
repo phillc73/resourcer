@@ -35,7 +35,7 @@ assign_resource("BA", 20, "Fixing Stuff")
 ```r
 assign_resource("Murdock", 25, "Flying")
 assign_resource("Smith", 10, "Smoking")
-assign_resource("BA", 20, "Lifting Stuff")
+assign_resource("BA", 15, "Lifting Stuff")
 ```
 
 * Remove a resource from a project. The function is applied in the form of `unassign_resource(name, project)`
@@ -85,7 +85,11 @@ remove_resource("Peck")
 
 ## To Do
 
+* Assign a Role to resources
+* Support searching for resources by name, project, role and capacity.
 * When removing a resource from the resource list, check they aren't still assigned to projects
+* Remove projects
+* "Pretty" option for table output (currently only outputs as "pretty")
 * Export a report with fancy charts and tables.
 
 
