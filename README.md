@@ -11,18 +11,19 @@ It's not even a package yet. Simply clone the repository, open resourcer.R scrip
 
 With `resourcer` you can:
 
-* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week) and team affiliation. The function is applied in the form of `add_resource(name, capacity, team)`
+* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week), team affiliation and role. The function is applied in the form of `add_resource(name, capacity, team)`
 
 ```r
-add_resource("Smith", 40, "A-Team")
-add_resource("Murdock", 40, "A-Team")
-add_resource("Peck", 40, "A-Team")
-add_resource("BA", 40, "A-Team")
+add_resource("Smith", 40, "A-Team", "Colonel")
+add_resource("Murdock", 40, "A-Team", "Captain")
+add_resource("Peck", 40, "A-Team", "Lieutenant")
+add_resource("BA", 40, "A-Team", "Sergeant")
 ```
 
 * Add a resource to a project. This includes assigned capacity (hours per week) and project name. Resources may be added to multiple uniquely named projects. The function is applied in the form of `assign_resource(name, assigned_capacity, project)`
 
 ```r
+assign_resource("Murdock", 20, "Recovering")
 assign_resource("Murdock", 20, "Flying")
 assign_resource("Peck", 30, "Persuading")
 assign_resource("Smith", 20, "Disguising")
@@ -82,14 +83,18 @@ show_resources("available_capacity")
 remove_resource("Peck")
 ```
 
+* Remove a project from the project list. The function is applied in the form of `remove_project(project)`
+
+```r
+remove_project("Recovering")
+```
+
 
 ## To Do
 
-* Assign a Role to resources
 * Support searching for resources by name, project, role and capacity.
 * When removing a resource from the resource list, check they aren't still assigned to projects
-* Remove projects
-* "Pretty" option for table output (currently only outputs as "pretty")
+* "Pretty" option for table output (currently only outputs as)
 * Export a report with fancy charts and tables.
 
 
