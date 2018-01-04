@@ -20,12 +20,12 @@ add_resource <- function(name, capacity, team, role) {
     resource_df <- read.csv("resources.csv", stringsAsFactors = FALSE)
     
     # Check if the name exists in resources table
-    if(any(grepl(name, resource_df$name)) == TRUE){
+    name_match <- paste0("^",name,"$")
+    if(any(grep(name_match, resource_df$name)) == TRUE){
       
       print("Resource already exists.")
       
     } else {
-      
       resource_df <- rbind(resource_df, data.frame(name = name, capacity = capacity, team = team, role = role))
       write.csv(resource_df, "resources.csv", row.names = FALSE)
       
@@ -48,12 +48,17 @@ assign_resource <- function(name, assigned_capacity, project){
     # Check if the name exists in resources table
     if(any(which(resource_df$name == name)) == TRUE){
       
+      # Pull in the resource's role from resource_df
+      name_match = paste0("^", name)
+      name_df <- resource_df[grep(name_match, resource_df$name), ]
+      
       # Check if projects.csv file exists
       if(!file.exists("projects.csv")){
         
         # If projects.csv doesn't exist, new dataframe then create csv
-        project_df_new <- data.frame(name = character(0), assigned_capacity = character(0), project = numeric(0))
-        project_df_new <- rbind(project_df_new, data.frame(name = name, assigned_capacity = assigned_capacity, project = project))
+        project_df_new <- data.frame(name = character(0), role = character(0), team = character(0), assigned_capacity = numeric(0), project = character(0))
+        
+        project_df_new <- rbind(project_df_new, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
         write.csv(project_df_new, "projects.csv", row.names = FALSE)
         
       } else {
@@ -62,10 +67,13 @@ assign_resource <- function(name, assigned_capacity, project){
         project_df <- read.csv("projects.csv", stringsAsFactors = FALSE)
         
         # Update hours of any resource previously assigned to a project
-        if(any(which(project_df$name == name)) && any(which(project_df$project == project)) == TRUE){
-          
-          
+        name_match <- paste0("^",name,"$")
+        project_match <- paste0("^",project,"$")
+        
+        if(any(grepl(name_match, project_df$name) & grepl(project_match, project_df$project)) == TRUE) {
+
           print("Updating hours of previously assigned resource....")
+          
           project_df[project_df$name == name & project_df$project == project, "assigned_capacity"] <- assigned_capacity
           
           write.csv(project_df, "projects.csv", row.names = FALSE)
@@ -73,7 +81,7 @@ assign_resource <- function(name, assigned_capacity, project){
           
         } else {
           
-          project_df <- rbind(project_df, data.frame(name = name, assigned_capacity = assigned_capacity, project = project))
+          project_df <- rbind(project_df, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
           
           write.csv(project_df, "projects.csv", row.names = FALSE)
           
@@ -149,12 +157,56 @@ remove_project <- function(project){
 # Show Available Resources function
 #############################################
 
-show_resources <- function(order_by = "name"){
+show_resources <- function(order_by = "name", name = "", role = "", capacity = "", team = ""){
   
   # If resources.csv files exists load it and show contents
   if(file.exists("resources.csv")){
     
     resource_df <- read.csv("resources.csv", stringsAsFactors = FALSE)
+    
+    # Apply search by name
+    name_match = paste0("^", name)
+    
+    if(any(grep(name_match, resource_df$name)) == TRUE){
+      
+      resource_df <- resource_df[grep(name_match, resource_df$name), ]
+      
+    } else {
+      print("There are no resources matching that name. Please try again.")
+    }
+    
+    # Apply search by role
+    role_match = paste0("^", role)
+    
+    if(any(grep(role_match, resource_df$role)) == TRUE){
+      
+      resource_df <- resource_df[grep(role_match, resource_df$role), ]
+      
+    } else {
+      print("There are no resources matching that role. Please try again.")
+    }
+    
+    # Apply search by capacity
+    capacity_match = paste0("^", capacity)
+    
+    if(any(grep(capacity_match, resource_df$capacity)) == TRUE){
+      
+      resource_df <- resource_df[grep(capacity_match, resource_df$capacity), ]
+      
+    } else {
+      print("There are no resources matching that capacity value. Please try again.")
+    }
+    
+    # Apply search by team
+    team_match = paste0("^", team)
+    
+    if(any(grep(team_match, resource_df$team)) == TRUE){
+      
+      resource_df <- resource_df[grep(team_match, resource_df$team), ]
+      
+    } else {
+      print("There are no team names matching that value. Please try again.")
+    }
     
     # Calculate available capacity
     if(file.exists("projects.csv")){
@@ -173,8 +225,9 @@ show_resources <- function(order_by = "name"){
       # Calculate available capacity
       assigned_df$available_capacity <- assigned_df$capacity - assigned_df$assigned_capacity.y
       
-      # Only the cold we want
-      assigned_df <- assigned_df[,c("name","capacity","team", "role", "available_capacity")]
+      # Only the cols we want
+      assigned_df <- assigned_df[,c("name","capacity", "team.x", "role.x", "available_capacity")]
+      names(assigned_df) <- c("name", "capacity", "team", "role", "available_capacity")
       
       # Resources not assigned to projects
       not_assigned_df <- resource_df[!resource_df$name %in% project_df$name,]
@@ -212,7 +265,7 @@ show_resources <- function(order_by = "name"){
 # Show Projects function
 #############################################
 
-show_projects <- function(order_by = "project"){
+show_projects <- function(order_by = "project", project = "", name = "", role = "", team = ""){
   
   # If projects.csv files exists load it and show contents
   if(file.exists("projects.csv")){
@@ -220,6 +273,50 @@ show_projects <- function(order_by = "project"){
     
     # Apply ordering
     project_df <- project_df[with(project_df, order(eval(parse(text = order_by)))),]
+    
+    # Apply search by name
+    name_match = paste0("^", name)
+    
+    if(any(grep(name_match, project_df$name)) == TRUE){
+
+    project_df <- project_df[grep(name_match, project_df$name), ]
+    
+    } else {
+      print("There are no assigned resources matching that name. Please try again.")
+    }
+    
+    # Apply search by project
+    project_match = paste0("^", project)
+    
+    if(any(grep(project_match, project_df$project)) == TRUE){
+      
+      project_df <- project_df[grep(project_match, project_df$project), ]
+      
+    } else {
+      print("There are no projects matching that description. Please try again.")
+    }
+    
+    # Apply search by team
+    team_match = paste0("^", team)
+    
+    if(any(grep(team_match, project_df$team)) == TRUE){
+      
+      project_df <- project_df[grep(team_match, project_df$team), ]
+      
+    } else {
+      print("There are no team names matching that value. Please try again.")
+    }
+    
+    # Apply search by role
+    role_match = paste0("^", role)
+    
+    if(any(grep(role_match, project_df$role)) == TRUE){
+      
+      project_df <- project_df[grep(role_match, project_df$role), ]
+      
+    } else {
+      print("There are no assigned resources matching that role. Please try again.")
+    }
     
     # Return the dataframe to print on screen
     knitr::kable(project_df)
@@ -258,8 +355,19 @@ remove_resource("Peck")
 remove_project("Lifting Stuff")
 
 show_resources()
+show_resources(order_by = "name")
 show_resources("available_capacity")
+show_resources(name = "Murdock")
+show_resources(name = "Murd")
+show_resources(role = "Sergeant")
+show_resources(capacity = 40)
+
 
 show_projects()
 show_projects(order_by = "name")
 show_projects("assigned_capacity")
+show_projects(project = "Disguising")
+show_projects(project = "Disg")
+show_projects(project = "Disguising", name = "Smith")
+show_projects(order_by = "assigned_capacity", name = "Smith")
+show_projects(role = "Colonel")
