@@ -73,13 +73,6 @@ assign_resource("Smith", 10, "Smoking")
 assign_resource("BA", 15, "Lifting Stuff")
 ```
 
-* Remove a resource from a project. The function is applied in the form of `unassign_resource(name, project)`
-
-```r
-unassign_resource("BA", "Lifting Stuff")
-unassign_resource("Peck", "Disguising")
-```
-
 * View all resources assigned to various projects, including their assigned capacity to each project. Returned table may be optionally ordered by any column. Projects can also be searched by assignee name, assignee role, assignee team and project description. Partial matches in search are supported. The function is applied in the form of `show_projects(order_by, project, name, role, team)`
 
 ```r
@@ -111,6 +104,48 @@ show_projects(role = "Colonel")
 show_projects(team = "A-Team")
 
 ```
+
+* Show total amount of resources assigned to a project. Leave empty to show all project or search by specific prohect name. Partial matches in search are supported. The function is applied in the form of `velocity(project)`
+
+```r
+velocity()
+
+|project       | total_velocity|
+|:-------------|--------------:|
+|Disguising    |             45|
+|Fixing Stuff  |             20|
+|Flying        |             25|
+|Lifting Stuff |             15|
+|Persuading    |             30|
+|Recovering    |             20|
+|Smoking       |             10|
+
+velocity(project = "Disguising")
+velocity(project = "Disg")
+
+|project    | total_velocity|
+|:----------|--------------:|
+|Disguising |             45|
+
+```
+
+* Remove a resource from a project. The function is applied in the form of `unassign_resource(name, project)`
+
+```r
+unassign_resource("BA", "Lifting Stuff")
+unassign_resource("Peck", "Disguising")
+show_projects()
+
+|   |name    |role       |team   | assigned_capacity|project      |
+|:--|:-------|:----------|:------|-----------------:|:------------|
+|4  |Smith   |Colonel    |A-Team |                20|Disguising   |
+|6  |BA      |Sergeant   |A-Team |                20|Fixing Stuff |
+|2  |Murdock |Captain    |A-Team |                25|Flying       |
+|3  |Peck    |Lieutenant |A-Team |                30|Persuading   |
+|1  |Murdock |Captain    |A-Team |                20|Recovering   |
+|5  |Smith   |Colonel    |A-Team |                10|Smoking      |
+```
+
 
 * Remove a resource from the resource list. The function is applied in the form of `remove_resource(name)`. Resources need to be manually unassigned from Projects first.
 
@@ -144,7 +179,7 @@ show_projects()
 ## To Do
 
 * When removing a resource from the resource list, check they aren't still assigned to projects
-* Show total resource capacity assigned to a specific project
+* Inverse searches. i.e. "not x"
 * Export a report with fancy charts and tables.
 
 
