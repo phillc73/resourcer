@@ -80,7 +80,7 @@ unassign_resource("BA", "Lifting Stuff")
 unassign_resource("Peck", "Disguising")
 ```
 
-* View all resources assigned to various projects, including their assigned capacity to each project. Returned table may be optionally ordered by any column. Projects can also be searched by assignee name, assignee role, assignee team and project description. Partial matches in search are supported. The function is applied in the form of `show_projects(order_by, project, name)`
+* View all resources assigned to various projects, including their assigned capacity to each project. Returned table may be optionally ordered by any column. Projects can also be searched by assignee name, assignee role, assignee team and project description. Partial matches in search are supported. The function is applied in the form of `show_projects(order_by, project, name, role, team)`
 
 ```r
 show_projects()
@@ -107,7 +107,7 @@ show_projects(project = "Disguising", name = "Smith")
 show_projects(order_by = "assigned_capacity", name = "Smith")
 # Search by assignee role within projects
 show_projects(role = "Colonel")
-# Search by assignee role within projects
+# Search by assignee team within projects
 show_projects(team = "A-Team")
 
 ```
@@ -126,7 +126,7 @@ show_resources()
 |4  |Smith   |       40|A-Team |Colonel  |                 10|
 ```
 
-* Remove a project from the project list. Projects will be removed, regardless of whether resources are still assigned to it. The function is applied in the form of `remove_project(project)`
+* Remove a project from the project list. Projects will be removed, regardless of whether resources are still assigned to them. The function is applied in the form of `remove_project(project)`
 
 ```r
 remove_project("Recovering")
