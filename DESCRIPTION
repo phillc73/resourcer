@@ -9,7 +9,7 @@ Description: Manage team resources with the capability to assign resources to pr
     resources and projects, view project velocity, view available capacity, unassign resources, 
     remove resources, remove projects.
 Depends:
-    R (>= 3.4.3)
+    R (>= 3.1)
 License: MIT + file LICENSE
 Encoding: UTF-8
 URL: https://github.com/phillc73/resourcer
