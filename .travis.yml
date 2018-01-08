@@ -5,7 +5,8 @@ sudo: false
 dist: trusty
 cache: packages
 
-warnings_are_errors: true
+# Add this back in after writing documentation
+# warnings_are_errors: true
 
 r:
   - 3.1
