@@ -4,8 +4,8 @@ Title:  Team Resource Management
 Version: 0.1.0
 Authors@R: person("Phill", "Clarke", email = "phill@starkingdom.co.uk", role = c("aut", "cre"))
 Maintainer: Phill Clarke <phill@starkingdom.co.uk>
-Description: Manage team resources: assign resources to projects, view assigned resources and projects, view project velocity, view available capacity, 
-unassign resources, remove resources, remove projects.
+Description: Manage team resources with the capability to assign resources to projects, view assigned resources and projects, view project velocity,
+view available capacity, unassign resources, remove resources, remove projects.
 Depends:
     R (>= 3.4.3)
 License: MIT + file LICENSE
