@@ -1,0 +1,19 @@
+Package: resourcer
+Type: Package
+Title:  Team Resource Management
+Version: 0.1.0
+Author: person("Phill", "Clarke", email = "phill@starkingdom.co.uk", role = c("aut", "cre"))
+Maintainer: Phill Clarke <phill@starkingdom.co.uk>
+Description: Manage team resources: assign resources to projects, view assigned resources and projects, view project velocity, view available capacity, 
+unassign resources, remove resources, remove projects.
+Depends:
+    R (>= 3.4.3)
+License: MIT + file LICENSE
+Encoding: UTF-8
+URL: https://github.com/phillc73/resourcer
+BugReports: https://www.github.com/phillc73/resourcer/issues
+LazyData: true
+Imports:
+    knitr (>= 1.18)
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1

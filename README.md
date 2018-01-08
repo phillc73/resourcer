@@ -3,7 +3,21 @@ R Package for Team Resource Management
 
 ## About
 
-It's not even a package yet. Simply clone the repository, open resourcer.R script and load the functions. Examples/tests found at the bottom of the resourcer.R file and in the examples below.
+This package can be used to define team resources and assign them to projects. 
+
+When resources are added, their overall available capacity is also defined. These resources may then be assigned to projects, with a specific allocated capacity. Resources may be added to multiple projects.
+
+Resources may be viewed, showing their available and unassigned capacity. Projects may also be viewed, showing which resources are assigned to them.
+
+Projects and resources may be searched by name.
+
+Install from GitHub
+
+# install.packages("devtools")
+devtools::install_github("phillc73/resourcer")
+library("resourcer")
+
+Examples/tests found in each R file and in the examples below. Manual pages and vignette still to be written.
 
 ## How to Use
 
@@ -180,6 +194,7 @@ show_projects()
 
 * When removing a resource from the resource list, check they aren't still assigned to projects
 * Inverse searches. i.e. "not x"
+* More granually approach to Velocity. e.g. Project velocity by Role.
 * Export a report with fancy charts and tables.
 
 
