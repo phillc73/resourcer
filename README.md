@@ -1,5 +1,9 @@
 # resourcer
+
+[![Build Status](https://travis-ci.org/phillc73/resourcer.svg?branch=master)](https://travis-ci.org/phillc73/resourcer)
+
 R Package for Team Resource Management
+
 
 ## About
 
@@ -11,11 +15,13 @@ Resources may be viewed, showing their available and unassigned capacity. Projec
 
 Projects and resources may be searched by name.
 
-Install from GitHub
+### Install
 
+```r
 # install.packages("devtools")
 devtools::install_github("phillc73/resourcer")
 library("resourcer")
+```
 
 Examples/tests found in each R file and in the examples below. Manual pages and vignette still to be written.
 
