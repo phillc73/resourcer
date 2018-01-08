@@ -15,6 +15,7 @@ Resources may be viewed, showing their available and unassigned capacity. Projec
 
 Projects and resources may be searched by name.
 
+
 ### Install
 
 ```r
@@ -24,6 +25,9 @@ library("resourcer")
 ```
 
 Examples/tests found in each R file and in the examples below. Manual pages and vignette still to be written.
+
+This package has no dependencies, although [knitr](https://yihui.name/knitr/) is suggested for producing prettier tables.
+
 
 ## How to Use
 

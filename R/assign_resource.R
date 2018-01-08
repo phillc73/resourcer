@@ -17,32 +17,65 @@
 
 #############################################
 
-add_resource <- function(name, capacity, team, role) {
-  
-  # Check if resources.csv file exists
-  if(!file.exists("resources.csv")){
-    
-    # If resources.csv doesn't exist, new dataframe then create csv
-    resource_df_new <- data.frame(name = character(0), capacity = numeric(0), team = character(0))
-    resource_df_new <- rbind(resource_df_new, data.frame(name = name, capacity = capacity, team = team, role = role))
-    write.csv(resource_df_new, "resources.csv", row.names = FALSE)
-    
-  } else {
-    
-    # If resoruces.csv does exist, read it in and append new data
+assign_resource <- function(name, assigned_capacity, project){
+
+  # If the resources.csv files exists, load it
+  if(file.exists("resources.csv")){
+
     resource_df <- read.csv("resources.csv", stringsAsFactors = FALSE)
-    
+
     # Check if the name exists in resources table
-    name_match <- paste0("^",name,"$")
-    if(any(grep(name_match, resource_df$name)) == TRUE){
-      
-      print("Resource already exists.")
-      
+    if(any(which(resource_df$name == name)) == TRUE){
+
+      # Pull in the resource's role from resource_df
+      name_match = paste0("^", name)
+      name_df <- resource_df[grep(name_match, resource_df$name), ]
+
+      # Check if projects.csv file exists
+      if(!file.exists("projects.csv")){
+
+        # If projects.csv doesn't exist, new dataframe then create csv
+        project_df_new <- data.frame(name = character(0), role = character(0), team = character(0), assigned_capacity = numeric(0), project = character(0))
+
+        project_df_new <- rbind(project_df_new, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
+        write.csv(project_df_new, "projects.csv", row.names = FALSE)
+
+      } else {
+
+        # If projects.csv does exist, read it in and append new data
+        project_df <- read.csv("projects.csv", stringsAsFactors = FALSE)
+
+        # Update hours of any resource previously assigned to a project
+        name_match <- paste0("^",name,"$")
+        project_match <- paste0("^",project,"$")
+
+        if(any(grepl(name_match, project_df$name) & grepl(project_match, project_df$project)) == TRUE) {
+
+          print("Updating hours of previously assigned resource....")
+
+          project_df[project_df$name == name & project_df$project == project, "assigned_capacity"] <- assigned_capacity
+
+          write.csv(project_df, "projects.csv", row.names = FALSE)
+
+
+        } else {
+
+          project_df <- rbind(project_df, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
+
+          write.csv(project_df, "projects.csv", row.names = FALSE)
+
+        }
+
+      }
+
     } else {
-      resource_df <- rbind(resource_df, data.frame(name = name, capacity = capacity, team = team, role = role))
-      write.csv(resource_df, "resources.csv", row.names = FALSE)
-      
+      # If name doesn't exist in resource table, show error
+      print("Resource does not exist. Check spelling or add a resource first.")
     }
+
+  } else {
+
+    # If resources.csv file doesn't exist, show error
+    print("There are no saved resources to assign. Please add resources before assigning to a project.")
   }
-  
 }
