@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+
+importFrom("stats", "aggregate")
+importFrom("utils", "read.csv", "write.csv")
