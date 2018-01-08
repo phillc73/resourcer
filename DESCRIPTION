@@ -1,6 +1,6 @@
 Package: resourcer
 Type: Package
-Title:  Team Resource Management
+Title: Team Resource Management
 Version: 0.1.0
 Authors@R: person("Phill", "Clarke", email = "phill@starkingdom.co.uk", role = c("aut", "cre"))
 Maintainer: Phill Clarke <phill@starkingdom.co.uk>
