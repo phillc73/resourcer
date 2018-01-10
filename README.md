@@ -35,7 +35,7 @@ This package has no dependencies, although [knitr](https://yihui.name/knitr/) is
 
 With `resourcer` you can:
 
-* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week), team affiliation, role and weight. Weight is a concept of value. The higher the weight, the more value assigned the resource. Resource names must be unique. The function is applied in the form of `add_resource(name, capacity, team, role, weight)`
+* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week), team affiliation, role and weight. Weight is a concept of value. The higher the weight, the higher value assigned to the resource. Resource names must be unique. The function is applied in the form of `add_resource(name, capacity, team, role, weight)`
 
 ```r
 add_resource("Smith", 40, "A-Team", "Colonel", 5)
@@ -44,7 +44,7 @@ add_resource(name = "Peck", capacity = 40, team = "A-Team", role = "Lieutenant",
 add_resource(name = "BA", capacity = 40, team = "A-Team", role = "Sergeant", weight = 2)
 ```
 
-* View all resources in the resource list, their total capacity, their team, their available capacity (hours per week) and their weight. Over assigned resources show as a negative number. The returned table may be optionally ordered by any column. Default ordering is alphabetical by name. Resources can also be searched by name, role and total capacity. Partial matches in search are supported. The function is applied in the form of `show_resources(order_by, name, role, capacity, team)`. 
+* View all resources in the resource list, their total capacity, their team, their available capacity (hours per week) and their weight. Over assigned resources show available capacity as a negative number. The returned table may be optionally ordered by any column. Default ordering is alphabetical by name. Resources can also be searched by name, role and total capacity. Partial matches in search are supported. The function is applied in the form of `show_resources(order_by, name, role, capacity, team)`. 
 
 ```r
 show_resources()
@@ -117,7 +117,7 @@ show_projects(team = "A-Team")
 
 ```
 
-* Multiple resources may also be added to the same project. In this example, the project "Disguising" already exists, with only Murdock assigned to it. Now Peck is also addedd....
+* Multiple resources may also be added to the same project. In this example, the project "Disguising" already exists, with only Murdock assigned to it. Now Peck is also added....
 
 ```r
 assign_resource("Peck", 25, "Disguising")
@@ -151,7 +151,7 @@ show_projects()
 
 ```
 
-* Show total amount of resources assigned to a project. Leave empty to show all project or search by specific project name. Partial matches in search are supported. The function is applied in the form of `velocity(project)`
+* Show total amount of resources assigned to a project. Leave empty to show all projects or search by specific project name. Capacity velocity is the sum of all resources' assigned capacity to that project. Weight velocity is the sum of all resources' assigned weights to that project. Total velocity is the sum of the individual products of all resources' assigned capacity and weight to that project. Partial matches in search are supported. The function is applied in the form of `velocity(project)`
 
 ```r
 velocity()
