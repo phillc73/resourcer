@@ -35,33 +35,34 @@ This package has no dependencies, although [knitr](https://yihui.name/knitr/) is
 
 With `resourcer` you can:
 
-* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week), team affiliation and role. Resource names must be unique. The function is applied in the form of `add_resource(name, capacity, team, role)`
+* Add a resource (imagined as a person) to the resource list. This includes available capacity (imagined as hours per week), team affiliation, role and weight. Weight is a concept of value. The higher the weight, the more value assigned the resource. Resource names must be unique. The function is applied in the form of `add_resource(name, capacity, team, role, weight)`
 
 ```r
-add_resource("Smith", 40, "A-Team", "Colonel")
-add_resource("Murdock", 40, "A-Team", "Captain")
-add_resource("Peck", 40, "A-Team", "Lieutenant")
-add_resource("BA", 40, "A-Team", "Sergeant")
+add_resource("Smith", 40, "A-Team", "Colonel", 5)
+add_resource("Murdock", 40, "A-Team", "Captain", 4)
+add_resource(name = "Peck", capacity = 40, team = "A-Team", role = "Lieutenant", weight = 3)
+add_resource(name = "BA", capacity = 40, team = "A-Team", role = "Sergeant", weight = 2)
 ```
 
-* View all resources in the resource list, their total capacity, their team and their available capacity (hours per week). Over assigned resources show as a negative number. The returned table may be optionally ordered by any column. Resources can also be searched by name, role and total capacity. Partial matches in search are supported. The function is applied in the form of `show_resources(order_by, name, role, capacity, team)`. 
+* View all resources in the resource list, their total capacity, their team, their available capacity (hours per week) and their weight. Over assigned resources show as a negative number. The returned table may be optionally ordered by any column. Default ordering is alphabetical by name. Resources can also be searched by name, role and total capacity. Partial matches in search are supported. The function is applied in the form of `show_resources(order_by, name, role, capacity, team)`. 
 
 ```r
 show_resources()
 show_resources("available_capacity")
+show_resources(order_by = "weight")
 
-|name    | capacity|team   |role       | available_capacity|
-|:-------|--------:|:------|:----------|------------------:|
-|Smith   |       40|A-Team |Colonel    |                 40|
-|Murdock |       40|A-Team |Captain    |                 40|
-|Peck    |       40|A-Team |Lieutenant |                 40|
-|BA      |       40|A-Team |Sergeant   |                 40|
+|name    | capacity|team   |role       | weight| available_capacity|
+|:-------|--------:|:------|:----------|------:|------------------:|
+|Smith   |       40|A-Team |Colonel    |      5|                 40|
+|Murdock |       40|A-Team |Captain    |      4|                 40|
+|Peck    |       40|A-Team |Lieutenant |      3|                 40|
+|BA      |       40|A-Team |Sergeant   |      2|                 40|
 
 # Search by resource name
 show_resources(name = "Murdock")
 # Search by resource name, partial match
 show_resources(name = "Murd")
-# Search by research role
+# Search by resource role
 show_resources(role = "Sergeant")
 # Search by capacity
 show_resources(capacity = 40)
@@ -83,20 +84,6 @@ assign_resource("BA", 20, "Fixing Stuff")
 
 ```
 
-* Multiple resources may also be added to the same project. In this example, the project "Disguising" already exists, with only Murdock assigned to it. Now Peck is also addedd....
-
-```r
-assign_resource("Peck", 25, "Disguising")
-```
-
-* Update a resource already assigned to a project. Simply add them again, but with a different amount of assigned capacity. The function is applied in the form of `assign_resource(name, assigned_capacity, project)`
-
-```r
-assign_resource("Murdock", 25, "Flying")
-assign_resource("Smith", 10, "Smoking")
-assign_resource("BA", 15, "Lifting Stuff")
-```
-
 * View all resources assigned to various projects, including their assigned capacity to each project. Returned table may be optionally ordered by any column. Projects can also be searched by assignee name, assignee role, assignee team and project description. Partial matches in search are supported. The function is applied in the form of `show_projects(order_by, project, name, role, team)`
 
 ```r
@@ -105,14 +92,15 @@ show_projects(order_by = "name")
 # Order by assgined capacity, in the first position
 show_projects("assigned_capacity")
 
-|   |name    |role       |team   | assigned_capacity|project      |
-|:--|:-------|:----------|:------|-----------------:|:------------|
-|5  |Smith   |Colonel    |A-Team |                10|Smoking      |
-|1  |Murdock |Captain    |A-Team |                20|Recovering   |
-|4  |Smith   |Colonel    |A-Team |                20|Disguising   |
-|6  |BA      |Sergeant   |A-Team |                20|Fixing Stuff |
-|2  |Murdock |Captain    |A-Team |                25|Flying       |
-|3  |Peck    |Lieutenant |A-Team |                30|Persuading   |
+|name    |role       |team   | assigned_capacity|project       |
+|:-------|:----------|:------|-----------------:|:-------------|
+|Smith   |Colonel    |A-Team |                15|Smoking       |
+|Murdock |Captain    |A-Team |                20|Recovering    |
+|Murdock |Captain    |A-Team |                20|Flying        |
+|Smith   |Colonel    |A-Team |                20|Disguising    |
+|BA      |Sergeant   |A-Team |                20|Fixing Stuff  |
+|Peck    |Lieutenant |A-Team |                30|Persuading    |
+|BA      |Sergeant   |A-Team |                30|Lifting Stuff |
 
 # Search by project description
 show_projects(project = "Disguising")
@@ -129,27 +117,61 @@ show_projects(team = "A-Team")
 
 ```
 
-* Show total amount of resources assigned to a project. Leave empty to show all project or search by specific prohect name. Partial matches in search are supported. The function is applied in the form of `velocity(project)`
+* Multiple resources may also be added to the same project. In this example, the project "Disguising" already exists, with only Murdock assigned to it. Now Peck is also addedd....
+
+```r
+assign_resource("Peck", 25, "Disguising")
+show_projects(project = "Disguising")
+
+|name  |role       |team   | assigned_capacity|project    |
+|:-----|:----------|:------|-----------------:|:----------|
+|Smith |Colonel    |A-Team |                20|Disguising |
+|Peck  |Lieutenant |A-Team |                25|Disguising |
+
+```
+
+* Update a resource already assigned to a project. Simply add them again, but with a different amount of assigned capacity. The function is applied in the form of `assign_resource(name, assigned_capacity, project)`
+
+```r
+assign_resource("Murdock", 25, "Flying")
+assign_resource("Smith", 10, "Smoking")
+assign_resource("BA", 15, "Lifting Stuff")
+show_projects()
+
+|name    |role       |team   | assigned_capacity|project       |
+|:-------|:----------|:------|-----------------:|:-------------|
+|Smith   |Colonel    |A-Team |                20|Disguising    |
+|Peck    |Lieutenant |A-Team |                25|Disguising    |
+|BA      |Sergeant   |A-Team |                20|Fixing Stuff  |
+|Murdock |Captain    |A-Team |                25|Flying        |
+|BA      |Sergeant   |A-Team |                15|Lifting Stuff |
+|Peck    |Lieutenant |A-Team |                30|Persuading    |
+|Murdock |Captain    |A-Team |                20|Recovering    |
+|Smith   |Colonel    |A-Team |                10|Smoking       |
+
+```
+
+* Show total amount of resources assigned to a project. Leave empty to show all project or search by specific project name. Partial matches in search are supported. The function is applied in the form of `velocity(project)`
 
 ```r
 velocity()
 
-|project       | total_velocity|
-|:-------------|--------------:|
-|Disguising    |             45|
-|Fixing Stuff  |             20|
-|Flying        |             25|
-|Lifting Stuff |             15|
-|Persuading    |             30|
-|Recovering    |             20|
-|Smoking       |             10|
+|project       | capacity_velocity| weight_velocity| total_velocity|
+|:-------------|-----------------:|---------------:|--------------:|
+|Disguising    |                45|               8|            175|
+|Fixing Stuff  |                20|               2|             40|
+|Flying        |                25|               4|            100|
+|Lifting Stuff |                15|               2|             30|
+|Persuading    |                30|               3|             90|
+|Recovering    |                20|               4|             80|
+|Smoking       |                10|               5|             50|
 
 velocity(project = "Disguising")
 velocity(project = "Disg")
 
-|project    | total_velocity|
-|:----------|--------------:|
-|Disguising |             45|
+|project    | capacity_velocity| weight_velocity| total_velocity|
+|:----------|-----------------:|---------------:|--------------:|
+|Disguising |                45|               8|            175|
 
 ```
 
@@ -160,16 +182,16 @@ unassign_resource("BA", "Lifting Stuff")
 unassign_resource("Peck", "Disguising")
 show_projects()
 
-|   |name    |role       |team   | assigned_capacity|project      |
-|:--|:-------|:----------|:------|-----------------:|:------------|
-|4  |Smith   |Colonel    |A-Team |                20|Disguising   |
-|6  |BA      |Sergeant   |A-Team |                20|Fixing Stuff |
-|2  |Murdock |Captain    |A-Team |                25|Flying       |
-|3  |Peck    |Lieutenant |A-Team |                30|Persuading   |
-|1  |Murdock |Captain    |A-Team |                20|Recovering   |
-|5  |Smith   |Colonel    |A-Team |                10|Smoking      |
-```
+|name    |role       |team   | assigned_capacity|project      |
+|:-------|:----------|:------|-----------------:|:------------|
+|Smith   |Colonel    |A-Team |                20|Disguising   |
+|BA      |Sergeant   |A-Team |                20|Fixing Stuff |
+|Murdock |Captain    |A-Team |                25|Flying       |
+|Peck    |Lieutenant |A-Team |                30|Persuading   |
+|Murdock |Captain    |A-Team |                20|Recovering   |
+|Smith   |Colonel    |A-Team |                10|Smoking      |
 
+```
 
 * Remove a resource from the resource list. The function is applied in the form of `remove_resource(name)`. Resources need to be manually unassigned from Projects first.
 
@@ -178,11 +200,12 @@ unassign_resource("Peck", "Persuading")
 remove_resource("Peck")
 show_resources()
 
-|   |name    | capacity|team   |role     | available_capacity|
-|:--|:-------|--------:|:------|:--------|------------------:|
-|1  |BA      |       40|A-Team |Sergeant |                 20|
-|2  |Murdock |       40|A-Team |Captain  |                 -5|
-|4  |Smith   |       40|A-Team |Colonel  |                 10|
+|name    | capacity|team   |role     | weight| available_capacity|
+|:-------|--------:|:------|:--------|------:|------------------:|
+|BA      |       40|A-Team |Sergeant |      2|                 20|
+|Murdock |       40|A-Team |Captain  |      4|                 -5|
+|Smith   |       40|A-Team |Colonel  |      5|                 10|
+
 ```
 
 * Remove a project from the project list. Projects will be removed, regardless of whether resources are still assigned to them. The function is applied in the form of `remove_project(project)`
@@ -191,12 +214,12 @@ show_resources()
 remove_project("Recovering")
 show_projects()
 
-|   |name    |role     |team   | assigned_capacity|project      |
-|:--|:-------|:--------|:------|-----------------:|:------------|
-|2  |Smith   |Colonel  |A-Team |                20|Disguising   |
-|4  |BA      |Sergeant |A-Team |                20|Fixing Stuff |
-|1  |Murdock |Captain  |A-Team |                25|Flying       |
-|3  |Smith   |Colonel  |A-Team |                10|Smoking      |
+|name    |role     |team   | assigned_capacity|project      |
+|:-------|:--------|:------|-----------------:|:------------|
+|Smith   |Colonel  |A-Team |                20|Disguising   |
+|BA      |Sergeant |A-Team |                20|Fixing Stuff |
+|Murdock |Captain  |A-Team |                25|Flying       |
+|Smith   |Colonel  |A-Team |                10|Smoking      |
 
 ```
 
@@ -204,7 +227,6 @@ show_projects()
 
 * When removing a resource from the resource list, check they aren't still assigned to projects
 * Inverse searches. i.e. "not x"
-* More granually approach to Velocity. e.g. Project velocity by Role.
 * Export a report with fancy charts and tables.
 
 

@@ -27,7 +27,7 @@ assign_resource <- function(name, assigned_capacity, project){
     # Check if the name exists in resources table
     if(any(which(resource_df$name == name)) == TRUE){
 
-      # Pull in the resource's role from resource_df
+      # Pull in the resource's role and weight from resource_df
       name_match = paste0("^", name)
       name_df <- resource_df[grep(name_match, resource_df$name), ]
 
@@ -35,9 +35,20 @@ assign_resource <- function(name, assigned_capacity, project){
       if(!file.exists("projects.csv")){
 
         # If projects.csv doesn't exist, new dataframe then create csv
-        project_df_new <- data.frame(name = character(0), role = character(0), team = character(0), assigned_capacity = numeric(0), project = character(0))
+        project_df_new <- data.frame(name = character(0),
+                                     role = character(0),
+                                     team = character(0),
+                                     weight = numeric(0),
+                                     assigned_capacity = numeric(0),
+                                     project = character(0))
 
-        project_df_new <- rbind(project_df_new, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
+        project_df_new <- rbind(project_df_new, data.frame(name = name,
+                                                           role = name_df$role,
+                                                           team = name_df$team,
+                                                           weight = name_df$weight,
+                                                           assigned_capacity = assigned_capacity,
+                                                           project = project))
+
         write.csv(project_df_new, "projects.csv", row.names = FALSE)
 
       } else {
@@ -60,7 +71,12 @@ assign_resource <- function(name, assigned_capacity, project){
 
         } else {
 
-          project_df <- rbind(project_df, data.frame(name = name, role = name_df$role, team = name_df$team, assigned_capacity = assigned_capacity, project = project))
+          project_df <- rbind(project_df, data.frame(name = name,
+                                                     role = name_df$role,
+                                                     team = name_df$team,
+                                                     weight = name_df$weight,
+                                                     assigned_capacity = assigned_capacity,
+                                                     project = project))
 
           write.csv(project_df, "projects.csv", row.names = FALSE)
 

@@ -7,16 +7,17 @@
 # remove_resource("Peck")
 
 #############################################
+# Needs checks to see if name still assigned to projects
 
-unassign_resource <- function(name, project){
-  
+remove_resource <- function(name){
+
   # Load in the project file
-  project_df <- read.csv("projects.csv", stringsAsFactors = FALSE)
-  
+  resource_df <- read.csv("resources.csv", stringsAsFactors = FALSE)
+
   # Remove rows which match name and project input
-  project_df <- project_df[!(project_df$name == name & project_df$project == project), ]
-  
+  resource_df <- resource_df[!(resource_df$name == name), ]
+
   # write new CSV
-  write.csv(project_df, "projects.csv", row.names = FALSE)
-  
+  write.csv(resource_df, "resources.csv", row.names = FALSE)
+
 }

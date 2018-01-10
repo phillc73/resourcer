@@ -19,9 +19,22 @@ velocity <- function(project = ""){
 
     if(project == ""){
 
-      # Calculate the velocity for all projects
-      velocity_df <- aggregate(project_df['assigned_capacity'], by=project_df['project'], sum)
-      colnames(velocity_df) <- c("project", "total_velocity")
+      # Calculate the capacity velocity for all projects
+      cap_velocity_df <- aggregate(project_df['assigned_capacity'], by=project_df['project'], sum)
+      colnames(cap_velocity_df) <- c("project", "capacity_velocity")
+
+      # Calculate the weight velocity for all projects
+      weight_velocity_df <- aggregate(project_df['weight'], by=project_df['project'], sum)
+      colnames(weight_velocity_df) <- c("project", "weight_velocity")
+
+      # Calculate the total velocity for all projects
+      project_df$total_velocity <- project_df$assigned_capacity * project_df$weight
+      total_velocity_df <- aggregate(project_df['total_velocity'], by=project_df['project'], sum)
+      colnames(total_velocity_df) <- c("project", "total_velocity")
+
+      # Merge dataframes together
+      velocity_df <- merge(cap_velocity_df, weight_velocity_df, by.x = "project", by.y="project")
+      velocity_df <- merge(velocity_df, total_velocity_df, by.x = "project", by.y="project")
 
 
     } else {
@@ -29,18 +42,31 @@ velocity <- function(project = ""){
 
       if(any(grep(project_match, project_df$project)) == TRUE){
 
-        # Calculate the velocity for individual projects
+        # Calculate the velocity for individual project
         project_df <- project_df[grep(project, project_df$project), ]
-        velocity_df <- aggregate(project_df['assigned_capacity'], by=project_df['project'], sum)
-        colnames(velocity_df) <- c("project", "total_velocity")
+
+        cap_velocity_df <- aggregate(project_df['assigned_capacity'], by=project_df['project'], sum)
+        colnames(cap_velocity_df) <- c("project", "capacity_velocity")
+
+        weight_velocity_df <- aggregate(project_df['weight'], by=project_df['project'], sum)
+        colnames(weight_velocity_df) <- c("project", "weight_velocity")
+
+        # Calculate the total velocity for inidividual project
+        project_df$total_velocity <- project_df$assigned_capacity * project_df$weight
+        total_velocity_df <- aggregate(project_df['total_velocity'], by=project_df['project'], sum)
+        colnames(total_velocity_df) <- c("project", "total_velocity")
+
+        # Merge dataframes together
+        velocity_df <- merge(cap_velocity_df, weight_velocity_df, by.x = "project", by.y="project")
+        velocity_df <- merge(velocity_df, total_velocity_df, by.x = "project", by.y="project")
       }
     }
 
     # Return the dataframe to print on screen
     if (requireNamespace("knitr", quietly = TRUE)) {
-      knitr::kable(velocity_df)
+      knitr::kable(velocity_df, row.names = FALSE)
     } else {
-      velocity_df
+      print(velocity_df, row.names = FALSE)
     }
 
   } else {

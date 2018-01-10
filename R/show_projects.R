@@ -15,7 +15,7 @@
 
 #############################################
 
-show_projects <- function(order_by = "project", project = "", name = "", role = "", team = "", velocity = ""){
+show_projects <- function(order_by = "project", project = "", name = "", role = "", team = ""){
 
   # If projects.csv files exists load it and show contents
   if(file.exists("projects.csv")){
@@ -69,10 +69,13 @@ show_projects <- function(order_by = "project", project = "", name = "", role = 
     }
 
     # Return the dataframe to print on screen
+    # Drop Weight column
+    project_df <- project_df[, !(colnames(project_df) %in% "weight")]
+
     if (requireNamespace("knitr", quietly = TRUE)) {
-      knitr::kable(project_df)
+      knitr::kable(project_df, row.names = FALSE)
     } else {
-      project_df
+      print(project_df, row.names = FALSE)
     }
 
   } else {

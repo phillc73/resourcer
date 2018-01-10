@@ -7,6 +7,7 @@
 # show_resources()
 # show_resources(order_by = "name")
 # show_resources("available_capacity")
+# show_resources("weight")
 # show_resources(name = "Murdock")
 # show_resources(name = "Murd")
 # show_resources(role = "Sergeant")
@@ -83,8 +84,8 @@ show_resources <- function(order_by = "name", name = "", role = "", capacity = "
       assigned_df$available_capacity <- assigned_df$capacity - assigned_df$assigned_capacity.y
 
       # Only the cols we want
-      assigned_df <- assigned_df[,c("name","capacity", "team.x", "role.x", "available_capacity")]
-      names(assigned_df) <- c("name", "capacity", "team", "role", "available_capacity")
+      assigned_df <- assigned_df[,c("name","capacity", "team.x", "role.x", "weight.x", "available_capacity")]
+      names(assigned_df) <- c("name", "capacity", "team", "role", "weight", "available_capacity")
 
       # Resources not assigned to projects
       not_assigned_df <- resource_df[!resource_df$name %in% project_df$name,]
@@ -100,18 +101,24 @@ show_resources <- function(order_by = "name", name = "", role = "", capacity = "
 
     } else {
 
+      # If not assigned, available capacity equals total capacity
       resource_df$available_capacity <- resource_df$capacity
 
     }
 
     # Apply ordering
+    if(order_by == "weight"){
+      # Heighest weights first
+      resource_df <- resource_df[with(resource_df, order(-eval(parse(text = order_by)))),]
+    } else {
     resource_df <- resource_df[with(resource_df, order(eval(parse(text = order_by)))),]
+    }
 
     # Return the dataframe to print on screen
     if (requireNamespace("knitr", quietly = TRUE)) {
-      knitr::kable(resource_df)
+      knitr::kable(resource_df, row.names = FALSE)
     } else {
-      resource_df
+      print(resource_df, row.names = FALSE)
     }
 
   } else {
