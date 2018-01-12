@@ -7,11 +7,11 @@
 # add_resource("Smith", 40, "A-Team", "Colonel", 5)
 # add_resource("Murdock", 40, "A-Team", "Captain", 4)
 # add_resource(name = "Peck", capacity = 40, team = "A-Team", role = "Lieutenant", weight = 3)
-# add_resource(name = "BA", capacity = 40, team = "A-Team", role = "Sergeant", weight = 2)
+# add_resource(name = "BA", capacity = 40, team = "A-Team", role = "Sergeant", weight = 2, notes = "Likes gold, pities fools")
 
 #############################################
 
-add_resource <- function(name, capacity, team, role, weight) {
+add_resource <- function(name, capacity, team, role, weight, notes) {
 
   # Check if resources.csv file exists
   if(!file.exists("resources.csv")){
@@ -21,13 +21,15 @@ add_resource <- function(name, capacity, team, role, weight) {
                                   capacity = numeric(0),
                                   team = character(0),
                                   role = character(0),
-                                  weight = numeric(0))
+                                  weight = numeric(0),
+                                  notes = character(0))
 
     resource_df_new <- rbind(resource_df_new, data.frame(name = name,
                                                          capacity = capacity,
                                                          team = team,
                                                          role = role,
-                                                         weight = weight))
+                                                         weight = weight,
+                                                         notes = notes))
 
     write.csv(resource_df_new, "resources.csv", row.names = FALSE)
 
@@ -47,7 +49,8 @@ add_resource <- function(name, capacity, team, role, weight) {
                                                    capacity = capacity,
                                                    team = team,
                                                    role = role,
-                                                   weight = weight))
+                                                   weight = weight,
+                                                   notes = notes))
 
       write.csv(resource_df, "resources.csv", row.names = FALSE)
 

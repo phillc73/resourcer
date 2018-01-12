@@ -84,8 +84,8 @@ show_resources <- function(order_by = "name", name = "", role = "", capacity = "
       assigned_df$available_capacity <- assigned_df$capacity - assigned_df$assigned_capacity.y
 
       # Only the cols we want
-      assigned_df <- assigned_df[,c("name","capacity", "team.x", "role.x", "weight.x", "available_capacity")]
-      names(assigned_df) <- c("name", "capacity", "team", "role", "weight", "available_capacity")
+      assigned_df <- assigned_df[,c("name","capacity", "team.x", "role.x", "weight.x", "role.x", "available_capacity")]
+      names(assigned_df) <- c("name", "capacity", "team", "role", "weight", "notes", "available_capacity")
 
       # Resources not assigned to projects
       not_assigned_df <- resource_df[!resource_df$name %in% project_df$name,]
@@ -115,6 +115,9 @@ show_resources <- function(order_by = "name", name = "", role = "", capacity = "
     }
 
     # Return the dataframe to print on screen
+    # Re-order columns
+    resource_df <- resource_df[c("name", "capacity", "available_capacity", "team", "role", "weight", "notes")]
+
     if (requireNamespace("knitr", quietly = TRUE)) {
       knitr::kable(resource_df, row.names = FALSE)
     } else {
